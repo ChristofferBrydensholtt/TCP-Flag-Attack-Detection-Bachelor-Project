@@ -1,1 +1,62 @@
+To make sure our suricata signatures work, we need to test the signatures against a simulated attack.
+This has been done through my Kali machine (138) against my suricata machine (131). 
+Several PCAPS are still needed to ensure against false positives.
 
+PCAPS for 1. Bad Flag ACK:
+Tools:
+hping3 -c 15000 -d 120 -U -w 64 -p 80 --flood --rand-source 192.168.244.131
+hping3 -c 15000 -d 120 -P -w 64 -p 80 --flood --rand-source 192.168.244.131
+hping3 -c 15000 -d 120 -F -w 64 -p 80 --flood --rand-source 192.168.244.131
+
+
+PCAP for 2. Bad Flag All
+Tools:
+hping3 -c 15000 -d 120 -U -S -A -F -R -P -w 64 -p 80 --flood --rand-source 192.168.244.131
+
+
+PCAP for 3. Bad Flag None (Null scan)
+Tools:
+nmap -sN 192.168.244.131
+
+Pcap for 4. Bad Flag Reserved
+Tools:
+>> from scapy.all import IP, TCP, send
+...: ...:
+...: ...: packet = IP(dst="192.168.244.131") / TCP(dport=80, flags="E")
+...: ...:
+...: ...: # Send the packet
+...: ...: send(packet)
+
+
+>> from scapy.all import IP, TCP, send
+...: ...:
+...: ...: packet = IP(dst="192.168.244.131") / TCP(dport=80, flags="C")
+...: ...:
+...: ...: # Send the packet
+...: ...: send(packet)
+
+>> from scapy.all import IP, TCP, send
+...: ...:
+...: ...: packet = IP(dst="192.168.244.131") / TCP(dport=80, flags="CA")
+...: ...:
+...: ...: # Send the packet
+...: ...: send(packet)
+
+
+Pcap for 5. Bad Flag RST
+Tools:
+>> from scapy.all import IP, TCP, send
+...: ...:
+...: ...: packet = IP(dst="192.168.244.131") / TCP(dport=80, flags="RS") ##RU,RP,RA,RF
+...: ...:
+...: ...: # Send the packet
+...: ...: send(packet)
+
+Pcap for 6. Bad Flag Syn Fin
+Tools:
+hping3 -c 15000 -d 120 -S -F -w 64 -p 80 --flood --rand-source 192.168.244.131
+
+
+Pcap for 7. Bad Flag URG
+Tools:
+sudo nmap -sX 192.168.244.131 (xmas scan)
