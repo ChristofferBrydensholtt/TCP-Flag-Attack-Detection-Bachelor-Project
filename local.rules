@@ -1,0 +1,38 @@
+alert tcp any any -> any any (msg:"TCP SYN flood attack detected"; flags:S; threshold: type threshold, track by_dst, count 20, seconds 60; classtype:denial-of-service; priority:5 ;sid:7000110; rev:1;)
+alert udp any any -> any any (msg:"UDP flood attack detected"; threshold: type threshold, track by_dst, count 20, seconds 60; classtype:denial-of-service; priority:5 ;sid:7000109; rev:1;)
+#alert tcp any any -> any any (msg:"TCP Traffic Alert"; sid:100000155;)
+#alert tcp any any -> any any (msg:"SYN RST URG packet"; flags:SRU,12; reference:arachnids,144; classtype:attempted-recon; sid:1000003321;)
+#alert tcp any any -> any any (msg:"SA  packet"; flags:SA,12; reference:arachnids,144; classtype:attempted-recon; sid:1000234325;)
+alert tcp any any -> any any (msg:"SynFin Detected"; flags: SF; sid:1053255;)
+
+#bad flag reserved:
+alert tcp any any -> any any (msg:"EC flags"; flags: E+; sid:10255;)
+alert tcp any any -> any any (msg:"CWR flags"; flags: C+; sid:1022353255;)
+
+
+#bad RST
+#alert tcp any any -> any any (msg:"RST + Other Flags TEST"; flags:R+; sid:153235;)
+
+
+#bad URG
+alert tcp any any -> any any (msg:"Bad URG flag"; flags:U!A; sid:188;)
+
+
+
+alert tcp any any -> any any (msg:"EC test"; flags: EC+; sid:108883255;)
+alert tcp any any -> any any (msg:"All Flags Set"; flags: RASPUF; sid:1006445;)
+alert tcp any any -> any any (msg:"Urgent and any other flag besides ACK"; flags: U*FRPS; sid:10335;)
+alert tcp any any -> any any (msg:"No Flags Set"; flags: 0; sid:100003;)
+
+#RST + any others (temp)
+alert tcp any any -> any any (msg:"RST + ACK "; flags:RA; sid:15335;)
+alert tcp any any -> any any (msg:"RST + SYN "; flags:RS; sid:15315;)
+alert tcp any any -> any any (msg:"RST + PUSH "; flags:RP; sid:15235;)
+alert tcp any any -> any any (msg:"RST + FIN "; flags:RF; sid:153225;)
+alert tcp any any -> any any (msg:"RST + URG "; flags:RU; sid:15115;)
+
+
+#Bad ACK flag
+alert tcp any any -> any any (msg:"Bad ACK flag PSH"; flags:P; threshold: type threshold, track by_src, count 1, seconds 300; sid:1997;)
+alert tcp any any -> any any (msg:"Bad ACK flag URG"; flags:U; threshold: type threshold, track by_src, count 1, seconds 300; sid:1994;)
+alert tcp any any -> any any (msg:"Bad ACK flag FIN"; flags:F; threshold: type threshold, track by_src, count 1, seconds 300; sid:1993;)
